@@ -1,6 +1,8 @@
 "use client";
 import React, { useRef, useState } from "react";
 
+// Note: If the prize is "10% off purchase", it does NOT apply to Bags for Beans.
+
 const originalPrizes = [
   "10% off purchase",
   "Free Elemental Profile Reading",
@@ -57,86 +59,154 @@ export default function PrizeWheel() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: 40,
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 140px)",
-          gridTemplateRows: "repeat(2, 140px)",
-          gap: 20,
-          marginBottom: 30,
-        }}
-      >
+    <div className="prizewheel-root">
+      <div className="prizewheel-grid">
         {prizes.map((prize, i) => (
           <div
             key={i}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              fontSize: 20,
-              fontWeight: highlightIndex === i ? "bold" : "normal",
-              border:
-                highlightIndex === i ? "4px solid #2196f3" : "2px solid #333",
-              background:
-                highlightIndex === i
-                  ? "#bbdefb"
-                  : i % 3 === 0
-                  ? "#512da8" // purple
-                  : i % 3 === 1
-                  ? "#1976d2" // blue
-                  : "#43a047", // green
-              color: highlightIndex === i ? "#222" : "#fff",
-              boxShadow: highlightIndex === i ? "0 0 16px #2196f3" : "none",
-              borderRadius: 16,
-              transition: "all 0.2s",
-              height: "140px",
-              width: "140px",
-              overflow: "hidden",
-              padding: "8px",
-            }}
+            className={`prizewheel-square${
+              highlightIndex === i ? " prizewheel-highlight" : ""
+            }`}
           >
             {prize}
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 20 }}>
+      <div className="prizewheel-controls">
         <button
           onClick={startCycling}
           disabled={cycling}
-          style={{
-            padding: "10px 30px",
-            fontSize: 18,
-            cursor: cycling ? "not-allowed" : "pointer",
-          }}
+          className="prizewheel-btn"
         >
           {cycling ? "Cycling..." : "Start"}
         </button>
         <button
           onClick={stopCycling}
           disabled={!cycling}
-          style={{
-            padding: "10px 30px",
-            fontSize: 18,
-            cursor: !cycling ? "not-allowed" : "pointer",
-          }}
+          className="prizewheel-btn"
         >
           Stop
         </button>
       </div>
       {selected && (
-        <div style={{ marginTop: 30, fontSize: 24, fontWeight: "bold" }}>
+        <div className="prizewheel-result">
           You won: {selected}
+          {selected.includes("10% off") && (
+            <div style={{ fontSize: "1rem", color: "#d32f2f", marginTop: 8 }}>
+              <strong>Note:</strong> 10% off does <u>not</u> apply to Bags for
+              Beans.
+            </div>
+          )}
         </div>
       )}
+      <style>{`
+        .prizewheel-root {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 40px;
+        }
+        .prizewheel-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(80px, 1fr));
+          grid-template-rows: repeat(2, minmax(80px, 1fr));
+          gap: 12px;
+          margin-bottom: 24px;
+          width: 100%;
+          max-width: 600px;
+        }
+        .prizewheel-square {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          font-size: 1.1rem;
+          font-weight: normal;
+          border: 4px solid #333;
+          background: #512da8;
+          color: #fff;
+          border-radius: 16px;
+          transition: all 0.2s;
+          min-height: 80px;
+          min-width: 80px;
+          max-width: 140px;
+          max-height: 140px;
+          padding: 8px;
+          box-sizing: border-box;
+          word-break: break-word;
+        }
+        .prizewheel-square:nth-child(3n+1) {
+          background: #512da8;
+        }
+        .prizewheel-square:nth-child(3n+2) {
+          background: #1976d2;
+        }
+        .prizewheel-square:nth-child(3n) {
+          background: #43a047;
+        }
+        .prizewheel-highlight {
+          border-color: #2196f3;
+          background: #bbdefb !important;
+          color: #222 !important;
+          box-shadow: 0 0 16px #2196f3;
+          font-weight: bold;
+        }
+        .prizewheel-controls {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+        .prizewheel-btn {
+          padding: 10px 24px;
+          font-size: 1rem;
+          border-radius: 8px;
+          border: none;
+          background: #1976d2;
+          color: #fff;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .prizewheel-btn:disabled {
+          background: #bdbdbd;
+          color: #888;
+          cursor: not-allowed;
+        }
+        .prizewheel-result {
+          margin-top: 24px;
+          font-size: 1.3rem;
+          font-weight: bold;
+          text-align: center;
+        }
+        @media (max-width: 600px) {
+          .prizewheel-grid {
+            grid-template-columns: repeat(4, minmax(60px, 1fr));
+            grid-template-rows: repeat(2, minmax(60px, 1fr));
+            gap: 8px;
+            max-width: 100vw;
+          }
+          .prizewheel-square {
+            min-height: 60px;
+            min-width: 60px;
+            max-width: 90px;
+            max-height: 90px;
+            font-size: 0.75rem;
+            padding: 2px;
+          }
+          .prizewheel-controls {
+            gap: 8px;
+          }
+          .prizewheel-btn {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+          }
+          .prizewheel-result {
+            font-size: 1.1rem;
+          }
+        }
+      `}</style>
     </div>
   );
 }
