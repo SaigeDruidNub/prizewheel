@@ -100,11 +100,17 @@ export default function PrizeWheel() {
         </div>
       )}
       <style>{`
+        body, html {
+          background: #181818;
+        }
         .prizewheel-root {
           display: flex;
           flex-direction: column;
           align-items: center;
           margin-top: 40px;
+          background: #181818;
+          min-height: 100vh;
+          width: 100vw;
         }
         .prizewheel-grid {
           display: grid;
