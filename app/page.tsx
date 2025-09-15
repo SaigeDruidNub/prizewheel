@@ -29,6 +29,7 @@ export default function PrizeWheel() {
   const [highlightIndex, setHighlightIndex] = useState<number>(0);
   const [prizes, setPrizes] = useState<string[]>(originalPrizes);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [showModal, setShowModal] = useState(true);
 
   // Shuffle prizes only on initial mount (client side)
   React.useEffect(() => {
@@ -60,7 +61,27 @@ export default function PrizeWheel() {
 
   return (
     <div className="prizewheel-root">
-      <div className="prizewheel-grid">
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Warning: Flashing Effect</h2>
+            <p>
+              This page contains a simulated flashing effect. If you are prone
+              to seizures or photosensitive epilepsy, please do not proceed.
+            </p>
+            <button className="modal-btn" onClick={() => setShowModal(false)}>
+              I Understand, Proceed
+            </button>
+          </div>
+        </div>
+      )}
+      <div
+        className="prizewheel-grid"
+        style={{
+          filter: showModal ? "blur(2px)" : undefined,
+          pointerEvents: showModal ? "none" : undefined,
+        }}
+      >
         {prizes.map((prize, i) => (
           <div
             key={i}
@@ -72,7 +93,13 @@ export default function PrizeWheel() {
           </div>
         ))}
       </div>
-      <div className="prizewheel-controls">
+      <div
+        className="prizewheel-controls"
+        style={{
+          filter: showModal ? "blur(2px)" : undefined,
+          pointerEvents: showModal ? "none" : undefined,
+        }}
+      >
         <button
           onClick={startCycling}
           disabled={cycling}
@@ -89,7 +116,13 @@ export default function PrizeWheel() {
         </button>
       </div>
       {selected && (
-        <div className="prizewheel-result">
+        <div
+          className="prizewheel-result"
+          style={{
+            filter: showModal ? "blur(2px)" : undefined,
+            pointerEvents: showModal ? "none" : undefined,
+          }}
+        >
           You won: {selected}
           {selected.includes("10% off") && (
             <div style={{ fontSize: "1rem", color: "#d32f2f", marginTop: 8 }}>
@@ -102,6 +135,47 @@ export default function PrizeWheel() {
       <style>{`
         body, html {
           background: #181818;
+        }
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0,0,0,0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+        .modal-content {
+          background: #fff;
+          color: #222;
+          padding: 32px 24px 24px 24px;
+          border-radius: 16px;
+          box-shadow: 0 4px 32px #0008;
+          max-width: 90vw;
+          width: 400px;
+          text-align: center;
+        }
+        .modal-content h2 {
+          margin-top: 0;
+          color: #d32f2f;
+        }
+        .modal-btn {
+          margin-top: 24px;
+          padding: 10px 28px;
+          font-size: 1.1rem;
+          border-radius: 8px;
+          border: none;
+          background: #1976d2;
+          color: #fff;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .modal-btn:hover {
+          background: #512da8;
         }
         .prizewheel-root {
           display: flex;
@@ -187,6 +261,10 @@ export default function PrizeWheel() {
           text-align: center;
         }
         @media (max-width: 600px) {
+          .modal-content {
+            width: 95vw;
+            padding: 18px 4vw 18px 4vw;
+          }
           .prizewheel-grid {
             grid-template-columns: repeat(4, minmax(60px, 1fr));
             grid-template-rows: repeat(2, minmax(60px, 1fr));
@@ -202,11 +280,18 @@ export default function PrizeWheel() {
             padding: 2px;
           }
           .prizewheel-controls {
-            gap: 8px;
+            flex-direction: column;
+            gap: 18px;
+            align-items: stretch;
           }
           .prizewheel-btn {
-            padding: 8px 16px;
-            font-size: 0.95rem;
+            padding: 14px 0;
+            font-size: 1.6rem;
+            width: 90vw;
+            max-width: 420px;
+            min-width: 220px;
+            margin-left: auto;
+            margin-right: auto;
           }
           .prizewheel-result {
             font-size: 1.1rem;
