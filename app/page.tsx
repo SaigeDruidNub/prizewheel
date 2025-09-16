@@ -294,7 +294,18 @@ export default function PrizeWheel() {
             margin-right: auto;
           }
           .prizewheel-result {
-            font-size: 1.1rem;
+            font-size: 1.35rem;
+            margin-top: 32px;
+            color: #fff;
+            background: #222b;
+            border-radius: 12px;
+            padding: 18px 8px;
+            max-width: 95vw;
+            word-break: break-word;
+            z-index: 2;
+            position: relative;
+            box-shadow: 0 2px 12px #0006;
+            text-align: center;
           }
         }
       `}</style>
